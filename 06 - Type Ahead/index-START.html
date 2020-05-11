@@ -23,13 +23,34 @@ fetch(endpoint) //returns a promise
   .then(blob => blob.json()) // console logging blob reveals that it has a json method that converts it to json, since we don't know what kind of data it is formatted in
   .then(data => cities.push(...data));
 
-  function findMatches(wordToMatch, cities) {
-    return cities.filter(place => {
+function findMatches(wordToMatch, cities) {
+  return cities.filter(place => {
 
-      const regex = new RegExp(wordToMatch, 'gi') // need to declare regex for wordToMatch in order to pass it through match method. 'g' is to search thru the global and 'i' is insensitive(match lower case and upper case)
-      return place.city.match()
-    })
-  }
+    const regex = new RegExp(wordToMatch, 'gi') // need to declare regex for wordToMatch in order to pass it through match method. 'g' is to search thru the global and 'i' is insensitive(match lower case and upper case)
+    return place.city.match(regex) || place.state.match(regex);
+  });
+}
+
+function displayMatches() {
+  const matchArray = findMatches(this.value, cities);
+  const html = matchArray.map(place => {
+    return `
+      <li>
+        <span class="name">${place.city}, ${place.state}</span>
+        <span class="population">${place.population}</span>
+      </li>
+    `
+  }).join('');
+  
+  suggestions.innerHTML = html;
+}
+
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+
+searchInput.addEventListener('change', displayMatches); //change event only fires when you go off that input. not when you type into it 
+searchInput.addEventListener('keyup', displayMatches); //keyup event will fire when you type 
+
 
 
 </script>
