@@ -15,43 +15,49 @@
     </ul>
   </form>
 <script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
-const cities = [];
+  const cities = [];
 
-fetch(endpoint) //returns a promise
-  .then(blob => blob.json()) // console logging blob reveals that it has a json method that converts it to json, since we don't know what kind of data it is formatted in
-  .then(data => cities.push(...data));
+  fetch(endpoint) //returns a promise
+    .then(blob => blob.json()) // console logging blob reveals that it has a json method that converts it to json, since we don't know what kind of data it is formatted in
+    .then(data => cities.push(...data));
 
-function findMatches(wordToMatch, cities) {
-  return cities.filter(place => {
+  function findMatches(wordToMatch, cities) {
+    return cities.filter(place => {
 
-    const regex = new RegExp(wordToMatch, 'gi') // need to declare regex for wordToMatch in order to pass it through match method. 'g' is to search thru the global and 'i' is insensitive(match lower case and upper case)
-    return place.city.match(regex) || place.state.match(regex);
-  });
-}
+      const regex = new RegExp(wordToMatch, 'gi') // need to declare regex for wordToMatch in order to pass it through match method. 'g' is to search thru the global and 'i' is insensitive(match lower case and upper case)
+      return place.city.match(regex) || place.state.match(regex);
+    });
+  }
 
-function displayMatches() {
-  const matchArray = findMatches(this.value, cities);
-  const html = matchArray.map(place => {
-    return `
-      <li>
-        <span class="name">${place.city}, ${place.state}</span>
-        <span class="population">${place.population}</span>
-      </li>
-    `
-  }).join('');
-  
-  suggestions.innerHTML = html;
-}
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 
-const searchInput = document.querySelector('.search');
-const suggestions = document.querySelector('.suggestions');
+  function displayMatches() {
+    const matchArray = findMatches(this.value, cities);
+    const html = matchArray.map(place => {
+      const regex = new RegExp(this.value, 'gi');
+      const cityName = place.city.replace(regex, `<span class='hl'>${this.value}</span>`);
+      const stateName = place.state.replace(regex, `<span class='hl'>${this.value}</span>`);
 
-searchInput.addEventListener('change', displayMatches); //change event only fires when you go off that input. not when you type into it 
-searchInput.addEventListener('keyup', displayMatches); //keyup event will fire when you type 
+      return `
+        <li>
+          <span class="name">${cityName}, ${stateName}</span>
+          <span class="population">${numberWithCommas(place.population)}</span>
+        </li>
+      `
+    }).join('');
 
+    suggestions.innerHTML = html;
+  }
 
+  const searchInput = document.querySelector('.search');
+  const suggestions = document.querySelector('.suggestions');
+
+  searchInput.addEventListener('change', displayMatches); //change event only fires when you go off that input. not when you type into it 
+  searchInput.addEventListener('keyup', displayMatches); //keyup event will fire when you type 
 
 </script>
 </body>
