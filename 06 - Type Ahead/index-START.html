@@ -24,7 +24,11 @@ fetch(endpoint) //returns a promise
   .then(data => cities.push(...data));
 
   function findMatches(wordToMatch, cities) {
-    
+    return cities.filter(place => {
+
+      const regex = new RegExp(wordToMatch, 'gi') // need to declare regex for wordToMatch in order to pass it through match method. 'g' is to search thru the global and 'i' is insensitive(match lower case and upper case)
+      return place.city.match()
+    })
   }
 
 
