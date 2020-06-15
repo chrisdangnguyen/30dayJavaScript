@@ -38,7 +38,7 @@ function handelUpdateRange() {
 
 function handleProgress() {
   const percent = (video.currentTime/video.duration) * 100;
-  progressBar.style.flexbasis = `${percent}%`
+  progressBar.style.flexBasis = `${percent}%`
 }
  
 // hook up the event listener
